@@ -1,4 +1,6 @@
 #include <stack>
+#include <string>
+#include <stdio.h>
 #include <iostream>
 
 using namespace std;
@@ -15,11 +17,16 @@ void reverse_poland(string& input, string& reverse_p)
             if (tmp == '(') {
                 stk.pop();
             } else {
-                while (stk.top() != '(') {
+                while (tmp != '(' && (!stk.empty())) {
+                    //tmp = stk.top();
+                    //reverse_p.push_back(tmp);
+                    //stk.pop();
                     reverse_p.push_back(tmp);
                     stk.pop();
+                    tmp = stk.top();
                 }
-                stk.pop();
+                if (!stk.empty())
+                    stk.pop();
             }
         } else if (input[i] == '+' || input[i] == '-' || input[i] == '*') {
             if (!stk.empty()) {
@@ -84,20 +91,23 @@ int main()
 
     int n;
     cin >> n;
-
+    char ch = getchar();
     int value1, value2;
 
     while (n--) {
         in.clear();
         out.clear();
         cin >> in;
+        //1char ch = getchar();
         reverse_poland(in, out);
+        //cout << out << endl;
         value1 = expression_to_value(out);
 
         in.clear();
         out.clear();
         cin >> in;
         reverse_poland(in, out);
+        //cout << out << endl;
         value2 = expression_to_value(out);
 
         if (value1 == value2) {
