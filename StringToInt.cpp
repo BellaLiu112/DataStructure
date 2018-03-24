@@ -2,6 +2,7 @@
 #include <string>
 #include <string.h>
 #include <vector>
+#include <stdio.h>
 
 using namespace std;
 
@@ -58,22 +59,21 @@ int StringIntFind(const char* str)
 }
 
 
-void input(char str[])
+void input(char *str)
 {
     char ch;
-    int i = 0;
     while (1) {
         ch = getchar();
         if (ch == '\n')
-            break;
-        str[i++] = ch;
+        break;
+        *str++ = ch;
     }
-    str[i] = '\0';
+    *str++ = '\0';
 }
 
-void transfer_to_int(char str[], vector<int>& container)
+void transfer_to_int(const char *str, vector<int>& container)
 {
-    int res = 0;
+        //int res = 0;
     int flag = 1;
     int n = (int)strlen(str);
     char tmp[32];
@@ -96,32 +96,69 @@ void transfer_to_int(char str[], vector<int>& container)
             }
         }
     }
-    if (tmp != "\0") {
+    
+    if (tmp[0] != '\0') {
         tmp[i-j] = '\0';
         int number = StringIntFind(tmp);
         container.push_back(number);
     }
 }
+/*
+ int reorganize(vector<int>& container)
+ {
+ int res = 0;
+ int flag = 1;
+ int i = 0;
+ for (; i < container.size(); ++i) {
+ int tmp = container[i];
+ if (tmp > 99) {
+ if (tmp > res) {
+ res *= tmp;
+ } else {
+ res -= container[i-1];
+ res += container[i]*container[i-1];
+ }
+ } else if (tmp == -1){
+ flag = -1;
+ } else {
+ res += container[i];
+ }
+ }
+ res *= flag;
+ return res;
+ }
+ */
 
 int reorganize(vector<int>& container)
 {
     int res = 0;
     int flag = 1;
-    int i = 0;
-    for (; i < container.size(); ++i){
-        if (container[i] > 99) {
-            res *= container[i];
-        } else if (container[i] == -1){
+    int tmp = 0;
+    for (int i = 0; i < container.size(); ++i) {
+        int num = container[i];
+        if (num == 100) {
+            tmp = (container[i-1] * 100);
+        } else if (num == 1000){
+            tmp *= 1000;
+            res += tmp;
+            tmp = 0;
+        } else if (num == 1000000){
+            tmp *= 1000000;
+            res += tmp;
+            tmp = 0;
+        } else if (num == -1){
             flag = -1;
         } else {
-            res += container[i];
+            tmp += num;
         }
     }
+    res += tmp;
     res *= flag;
     return res;
 }
 
-int main()
+
+int main(int argc, char *argv[])
 {
     vector<int> container;
     while (1) {
@@ -129,8 +166,8 @@ int main()
         char buff[1024];
         buff[0] = '\0';
         input(buff);
-        if (strlen(buff) == 0)
-            break;
+        if (!strlen(buff))
+        break;
         transfer_to_int(buff, container);
         int res = reorganize(container);
         cout << res << endl;
