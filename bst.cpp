@@ -50,11 +50,11 @@ int main(int argc, char* argv[])
     BST bst;
     int temp;
     char ch;
-    while (1) {
+    while (!cin.eof()) {
         cin >> temp;
         ch = cin.get();
         bst.insert(temp);
-        if (ch == '\n' || cin.eof())
+        if (ch == '\n')
             break;
     }
     bst.PreOrder();
